@@ -36,4 +36,3 @@ const ListItem = ({ task, getData }) => {
 }
 
 export default ListItem
-  

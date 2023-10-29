@@ -97,4 +97,3 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
 }
 
 export default Modal
-  

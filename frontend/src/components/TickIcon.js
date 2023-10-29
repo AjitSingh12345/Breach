@@ -14,4 +14,3 @@ const TickIcon = () => {
 }
 
 export default TickIcon
-  
