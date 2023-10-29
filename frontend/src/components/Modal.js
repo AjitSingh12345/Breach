@@ -15,7 +15,7 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
         // keeps page from refreshing 
         e.preventDefault()
         try {
-            const resp = await fetch(`http://localhost:8000/todos`, {
+            const resp = await fetch(`${process.env.REACT_APP_SERVERURL}/todos`, {
                 method: "POST",
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
@@ -34,7 +34,7 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
         // so form doesnt refresh
         e.preventDefault()
         try {
-            const resp = await fetch(`http://localhost:8000/todos/${task.id}`, {
+            const resp = await fetch(`${process.env.REACT_APP_SERVERURL}/todos/${task.id}`, {
                 method: "PUT",
                 headers: { 'Content-Type' : 'application/json' },
                 body: JSON.stringify(data)

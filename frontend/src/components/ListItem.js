@@ -3,11 +3,15 @@ import ProgressBar from './ProgressBar'
 import { useState } from 'react'
 import Modal from './Modal'
 
+// require('dotenv').config()
+
 const ListItem = ({ task, getData }) => {
     const [ showModal, setShowModal ] = useState(false)
+    
     const deleteItem = async () => {
         try {
-            const resp = await fetch(`http://localhost:8000/todos/${task.id}`, {
+            console.log(process.env.REACT_APP_SERVERURL)
+            const resp = await fetch(`${process.env.REACT_APP_SERVERURL}/todos/${task.id}`, {
                 method: "DELETE"
             })
             if (resp.status === 200) {

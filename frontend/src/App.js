@@ -2,18 +2,14 @@ import ListHeader from './components/ListHeader'
 import ListItem from './components/ListItem'
 import { useEffect, useState } from 'react'
 
-// require('dotenv').config()
 
 const App = () => {
-  // process.env.REACT_APP_SERVERURL ?? console.log("set:", process.env.REACT_APP_SERVERURL)
-
   const userEmail = 'lol@test.com'
   const [ tasks, setTasks ] = useState(null)
 
   const getData = async () => {
     try {
-      // console.log(process.env.PORT, process.env.REACT_APP_SERVERURL)
-      const resp = await fetch(`http://localhost:8000/todos/${userEmail}`)
+      const resp = await fetch(`${process.env.REACT_APP_SERVERURL}/todos/${userEmail}`)
       const json = await resp.json()
       setTasks(json)
     } catch (err) {
