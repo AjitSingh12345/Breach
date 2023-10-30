@@ -7,7 +7,7 @@ import Modal from './Modal'
 
 const ListItem = ({ task, getData }) => {
     const [ showModal, setShowModal ] = useState(false)
-    
+
     const deleteItem = async () => {
         try {
             console.log(process.env.REACT_APP_SERVERURL)
@@ -27,7 +27,7 @@ const ListItem = ({ task, getData }) => {
             <div className="info-container">
                 <TickIcon/>
                 <p className="task-title">{task.title}</p>
-                <ProgressBar/>
+                <ProgressBar progress={task.progress}/>
             </div>
 
             <div className='button-container'>
