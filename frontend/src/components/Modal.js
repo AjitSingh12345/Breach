@@ -11,6 +11,21 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
         title: editMode ? task.title : null,
         progress: editMode ? task.progress : 50,
         date: editMode ? task.date : new Date()
+        // company_name: doc.company_name,
+        // job_title: doc.job_title,
+        // year_applied: doc.year_applied,
+
+        // this is res info
+        // previous_experience: 
+        // gender:
+        // ethnicity:
+        // college_name:
+        // major:
+        // skills:
+        // clubs:
+        // gpa:
+        // classes_taken:
+        // date_added:
     })    
 
     const postData = async (e) => {

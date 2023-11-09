@@ -1,4 +1,8 @@
-body {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* body {
   margin: 0;
   padding: 0;
   background-color: aliceblue;
@@ -14,6 +18,30 @@ body {
   padding: 10px;
   width: 800px;
   margin-top: 50px;
+} */
+
+/* 2 boxes on homepage */
+
+.home-box {
+  
+  border-width: 4px;
+  background-color: white;
+  box-shadow: rgba(0,0,0, 0.05) 0 6px 24px, rgba(0,0,0, 0.08) 0 0 0 1px;
+  border-radius: 10px;
+  padding: 2.5%;
+  margin: 2.5%;
+  float: left
+}
+
+.search {
+  border-color: rgb(202, 24, 24);
+  width: 30%;
+}
+
+.results {
+  border-color: rgb(18, 18, 92);
+  width: 60%;
+  padding: 3%;
 }
 
 .button-container, .info-container {
@@ -60,8 +88,8 @@ body {
 }
 
 .create {
-  border: 1.5px solid rgb(108, 115, 148);
-  color: rgb(108, 115, 148);
+  border: 1.5px solid rgb(21, 45, 168);
+  color: rgb(77, 80, 95);
   text-transform: uppercase;
 }
 
@@ -101,6 +129,7 @@ input {
 /* List Header */
 
 .list-header {
+  margin-top: 10px;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -234,4 +263,6 @@ input {
 
 .task-title {
   width: 300px;
-}
+} 
+
+

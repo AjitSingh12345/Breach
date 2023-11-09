@@ -3,6 +3,18 @@ import ListItem from './components/ListItem'
 import { useEffect, useState } from 'react'
 import Auth from './components/Auth'
 import { useCookies } from 'react-cookie'
+import Navbar from './components/Navbar.js'
+import Example from './components/Example'
+import SearchFormModal from './components/SearchFormModal'
+import { Modal } from 'antd'
+import ExampleMod from './onlineModal'
+import DocModal from './components/DocModal'
+import {
+  Button,
+  Flex
+} from 'antd'
+import { SearchOutlined } from '@ant-design/icons';
+
 
 const App = () => {
   const [ cookies, setCookie, removeCookie ] = useCookies(null)
@@ -10,7 +22,10 @@ const App = () => {
   const userEmail = cookies.Email
   const [ tasks, setTasks ] = useState(null)
 
-  const getData = async () => {
+  // pass these into search form modal to get data back from search form 
+  // pass getData into search form so u can call it w a certain query after submit button is hit (or clear)
+
+  const getData = async (query) => {
     try {
       const resp = await fetch(`${process.env.REACT_APP_SERVERURL}/todos/${userEmail}`)
       const json = await resp.json()
@@ -31,19 +46,49 @@ const App = () => {
   // sort tasks by date
   const sortedTasks = tasks?.sort((a, b) => new Date(a.date) - new Date(b.date))
 
+  const [ searchDone, setSearchDone ] = useState(false)
+  /*
+   add a search button here ->
+   - when clicked 
+   */
+
+   const stuff = () => {
+    console.log('done clicky')
+    setSearchDone(!searchDone)
+   }
+
   return (
-      <div className="app">
-        {/* pass prop into list header; map each sorted task to a list item element */}
-        {/* if no auth token -> show authmodal, otherwise show header & tasks and stuff */}
-        {!authToken && <Auth/>}
-        {authToken && 
-          <>
-          <ListHeader listName={'*Holiday tick list'} getData={getData} />
-          <p className='user-email'>Welcome back {userEmail}</p>
-          {sortedTasks?.map((task) => <ListItem key={task.id} task={task} getData={getData} />)}
-        </>}
-        <p className='copyright'>Ajit Stuff LLC</p>
-      </div>
+    /*
+    Im gonna make 2 boxes (1 on left & 1 on right )
+    */
+    <div className="app">
+
+      <Navbar/>
+        <div  className='home-box search'>
+          <Button 
+              onClick={stuff}
+              type="dashed" 
+              size="large"
+              icon={<SearchOutlined />}
+              style={{
+                  marginLeft: '37%',
+                  height: 'auto',
+                  borderColor: 'grey',
+                  backgroundColor: '#fff1f0',
+                  marginBottom: '10%'
+                }}
+              >
+              <br/>
+              Show Query
+          </Button>          
+          {searchDone ? <SearchFormModal/> : <></>}
+        </div>
+        <div  className='home-box results'>
+          {sortedTasks?.map((task) => 
+          <ListItem key={task.id} task={task} getData={getData} 
+          />)}
+        </div>
+    </div>
   )
 }
 
