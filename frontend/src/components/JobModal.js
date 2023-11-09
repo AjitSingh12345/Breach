@@ -15,7 +15,7 @@ const JobModal = ({ setShowJobModal, getData }) => {
         company_name: null,
         position: null,
         year_applied: 2000,
-        doc_used_name: null,
+        doc_id: null,
         job_added_date: new Date()
     }) 
 

@@ -8,12 +8,6 @@ import Modal from './Modal'
 const ListItem = ({ task, getData }) => {
     const [ showModal, setShowModal ] = useState(false)
 
-    task = {
-        id: 'io',
-        title: 'hu',
-        progress: 50
-    }
-
     const deleteItem = async () => {
         try {
             console.log(process.env.REACT_APP_SERVERURL)

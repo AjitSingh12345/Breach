@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Auth from './components/Auth'
 import { useCookies } from 'react-cookie'
 import Navbar from './components/Navbar.js'
-import Example from './components/Example'
+import ResultItem from './components/ResultItem'
 import SearchFormModal from './components/SearchFormModal'
 import { Modal } from 'antd'
 import ExampleMod from './onlineModal'
@@ -81,12 +81,13 @@ const App = () => {
               <br/>
               Show Query
           </Button>          
-          {searchDone ? <SearchFormModal/> : <></>}
+          {searchDone ? <SearchFormModal getData={getData} /> : <></>}
         </div>
         <div  className='home-box results'>
           {sortedTasks?.map((task) => 
-          <ListItem key={task.id} task={task} getData={getData} 
+          <ListItem key={task.id} task={task} getData={getData}
           />)}
+          <ResultItem entries={null} /> 
         </div>
     </div>
   )

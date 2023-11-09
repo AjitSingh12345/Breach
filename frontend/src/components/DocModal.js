@@ -19,6 +19,8 @@ const DocModal = ({ setShowDocModal, getData }) => {
     const [ cookies, setCookie, removeCookie ] = useCookies(null)
 
     const [ docData, setDocData ] = useState({
+        // unqiue id?
+        unique_id: null,
         school_name: null,
         gpa: null,
         major: null,
