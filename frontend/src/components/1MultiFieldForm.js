@@ -5,11 +5,11 @@ const MFF1 = ({ label1, name, docData, setDocData }) => {
     // console.log("in: ", docData)
 
     const onUpdate = (values, allVals) => {
-        console.log('Received values of form:', values, ", ", allVals);
+        console.log('Received values of form:', values, ", ", allVals, allVals[name]);
 
         setDocData(docData => ({
             ...docData,
-            [name] : allVals
+            [name] : allVals[name]
         }))
 
         console.log("updated: ", docData)

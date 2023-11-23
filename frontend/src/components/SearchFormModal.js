@@ -1,8 +1,8 @@
-import { PlusOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useState, useEffect } from 'react';
 import GpaSlider from './GpaSlider';
 import {
-  // Button,
+  Button,
   Cascader,
   Checkbox,
   DatePicker,
@@ -19,25 +19,11 @@ import {
   Flex
 } from 'antd';
 
-// import {
-//   Button
-// } from 'react-native'
-
-
-import { Button } from 'antd';
-import { DeleteOutlined } from "@ant-design/icons";
- 
-
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
-const normFile = (e) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
-
 const SearchFormModal = ({ getData }) => {
+  console.log("in: ")
+
+  const [form] = Form.useForm();
+
   const [ searchParams, setSearchParams ] = useState({
     company_name: null,
     position: null,
@@ -54,6 +40,10 @@ const SearchFormModal = ({ getData }) => {
     ethnicity: null
   })
 
+  // useEffect(() => {
+  //   getData("search form page")
+  // }, [])  
+
   const handleChangeDate = (date, dateString) => {
     console.log("date stuff: ", date, dateString)
 
@@ -61,7 +51,6 @@ const SearchFormModal = ({ getData }) => {
       ...searchParams,
       ['year_applied'] : dateString
     }))
-
   }
 
   const handleChange = (e, name) => {
@@ -86,8 +75,25 @@ const SearchFormModal = ({ getData }) => {
     console.log("curr data: ", searchParams)
   }
 
-  const finished = (e) => {
-    console.log('finished! ', e)
+  const clearForm = () => {
+    setSearchParams(searchParams => ({
+      company_name: null,
+      position: null,
+      year_applied: null,
+      previous_employers: null, 
+      expereince_keywords: null, 
+      college_attended: null,
+      major: null,
+      min_gpa: null,
+      max_gpa: null,
+      skills: null,
+      clubs_activites: null,
+      gender: null,
+      ethnicity: null
+    }))
+
+    form.resetFields();
+    console.log('cleared! ', searchParams)
   }
 
   /*
@@ -99,9 +105,8 @@ const SearchFormModal = ({ getData }) => {
   */
 
   return (
-    <div>
-    {/* <label>Enter in ur search params</label> */}
       <Form
+        form={form}
         labelCol={{
           span: 10,
         }}
@@ -112,7 +117,7 @@ const SearchFormModal = ({ getData }) => {
         style={{
           maxWidth: 800,
         }}
-        onFinish={finished}
+        onFinish={null}
       >
         <Form.Item label="Company Name">
           <Input
@@ -193,20 +198,26 @@ const SearchFormModal = ({ getData }) => {
           <Flex gap="large" wrap="wrap">
             <Button 
               type="primary" 
-              style={{ background: "blue", 
-              borderColor: "grey" }}>
+              style={{ 
+                background: "blue", 
+                borderColor: "grey" }}
+              onClick={() => getData(searchParams)}
+            >
               Submit
             </Button>
             {' '}
-            <Button type="primary" danger>
+            {/* <Button 
+            type="primary" 
+            danger
+            onClick={clearForm}
+            >
               Clear
-            </Button>
+            </Button> */}
           </Flex>
         </Form.Item>
       </Form>
-    </div>
   );
 };
 
 // export default SearchFormModal
-export default () => <SearchFormModal />;
+export default SearchFormModal

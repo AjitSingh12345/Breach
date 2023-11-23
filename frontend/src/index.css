@@ -20,6 +20,24 @@
   margin-top: 50px;
 } */
 
+
+/* job upload page */
+
+.job-upload-page {
+  height: 100px;
+  position: relative;
+  order: 3px solid green;
+}
+
+.job-upload-button {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
 /* 2 boxes on homepage */
 
 .home-box {
@@ -34,7 +52,7 @@
 }
 
 .search {
-  border-color: rgb(202, 24, 24);
+  border-color: rgb(24, 202, 66);
   width: 30%;
 }
 
@@ -89,17 +107,19 @@
 
 .create {
   border: 1.5px solid rgb(21, 45, 168);
-  color: rgb(77, 80, 95);
+  color: white;
+  background-color: blue;
   text-transform: uppercase;
 }
 
 .create:hover {
   background-color: rgb(131, 138, 172);
+  color: black;
 }
 
 .create:active {
   background-color: rgb(108, 115, 148);
-  color: rgb(255, 255, 255)
+  color: black;
 }
 
 .signout {
@@ -161,9 +181,9 @@ input {
 /* Modal */
 
 .overlay {
-  position: absolute;
+  position: relative;
   left: 0;
-  top: 0;
+  top: 10%;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0,0,0, 0.5);

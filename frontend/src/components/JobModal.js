@@ -1,46 +1,104 @@
 // This is to add new Job u passed res screen for
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useCookies } from 'react-cookie'
 import {
     Button,
     Select,
-    DatePicker
+    DatePicker,
+    Modal,
+    Form,
+    Input,
+    notification
 } from 'antd';
 
-const JobModal = ({ setShowJobModal, getData }) => {
+const JobModal = ({ setShowJobModal, getData, myDocs }) => {
     const [ cookies, setCookie, removeCookie ] = useCookies(null)
+    const [ posted, setPosted ] = useState(false)
+
+    const [api, contextHolder] = notification.useNotification();
+
+    const openNotificationWithIcon = (type, title, descrip) => {
+      api[type]({
+        message: title,
+        description: descrip
+        });
+    };
+
+    const ReqKeys = ['company_name', 'position', 'year_applied', 'doc_id']
 
     const [ jobData, setJobData ] = useState({
         company_name: null,
         position: null,
-        year_applied: 2000,
+        year_applied: null,
         doc_id: null,
         job_added_date: new Date()
     }) 
 
-    const postData = async(e) => {
-        e.preventDefault()
-        try {
-            const resp = await fetch(`${process.env.REACT_APP_SERVERURL}/myJobs`, {
-                method: "POST",
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(jobData)
-            })
-            if (resp.status === 200) {
-                console.log('Worked')
-                setShowJobModal(false)
-                getData()
-            }
-        } catch(err) {
-            console.error(err)
+    const notif = (success) => {
+        if (success) {
+            openNotificationWithIcon('success', 'Submitted Successfully!', 'Your document has been submitted')
+        } else {
+            openNotificationWithIcon('error', 'Submission Failed!', 'Please fill out all of the required fields (marked with asterict) before submitting')
         }
     }
 
-    const handleChange = (e) => {
+    function sleep(ms) {
+        return new Promise((resolve) => {
+          setTimeout(resolve, ms);
+        });
+    }
+
+    const postData = async(e) => {
+         /*
+        - have arr of required keys
+        - if all those r filled -> then make post req
+        & close modal & show notification thaat form was submitted
+        - else -> dont close modal or send post req & give notif to fill req fields 
+        */
+        // console.log("posting: ", e, docData, docData['skills']['skills'])
+        var reqFieldsFilled = true
+
+        for (const k of ReqKeys) if (jobData[k] == null || jobData[k] == '') {
+            console.log("not filled: ", k)
+            reqFieldsFilled = false
+        }
+
+        console.log('posted a new breach ...')
+        e.preventDefault()
+        if (reqFieldsFilled) {
+            try {
+                const resp = await fetch(`${process.env.REACT_APP_SERVERURL}/breaches`, {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(jobData)
+                })
+                console.log("resp: ", resp)
+                if (resp.status === 200) {
+                    console.log('Worked')
+    
+                    // give success notif
+                    notif(true)
+                    setPosted(true)
+                    await sleep(2000)
+                    setShowJobModal(false)
+                }
+            } catch(err) {
+                console.error(err)
+    
+                // give failure notif
+                notif(false)
+            }
+        } else {
+            // give failure notif
+            notif(false)
+        }
+    }
+
+    const handleChange = (e, name) => {
         console.log("changing!", e)
-        console.log("imp vals:", e.target)
-        const { name, value } = e.target
+        console.log("imp vals:", e.target.value)
+        const value = e.target.value
         console.log("imp vals 2: ", name, value)
 
         setJobData(jobData => ({
@@ -64,73 +122,125 @@ const JobModal = ({ setShowJobModal, getData }) => {
         console.log(jobData)
     }
 
-    return (
-        <div className="overlay">
-            <div className="modal">
-                <div className="form-title-container">
-                    <h3>Let's add your passed job screen</h3>
-                    <button onClick={() => setShowJobModal(false)}>X</button>
-                </div>
+    const handleChangeSelect = (value, name) => {
+        console.log("changing select! ", value, ": ", name)
 
-                <form>
-                    <input
-                        required
-                        maxLength={30}
-                        placeholder=" Your Company goes here"
-                        name="company_name"
-                        value={jobData.company_name}
-                        onChange={handleChange}
+        setJobData(jobData => ({
+            ...jobData,
+            [name] : value
+        }))
+    }
+
+
+    const handleCancel = () => {
+        setShowJobModal(false)
+    }
+
+    // make antd form??
+    return (
+        <Modal
+            open={true}
+            title="Breach Info" 
+            onOk={null} 
+            onCancel={handleCancel}
+            footer={[
+                
+            ]}
+        >
+
+        {contextHolder}
+
+        {!posted && <Form
+            >
+                <Form.Item
+                    label='Company Name'
+                    name="Company Name"
+                    rules={[
+                        {
+                            required: true,
+                        },
+                    ]}
+                >
+                    <Input
+                        placeholder="Your company name goes here"
+                        onChange={(e) => handleChange(e, 'company_name')}
                     />
-                    <input
-                        required
-                        maxLength={30}
-                        placeholder=" Your Position goes here"
-                        name="position"
-                        value={jobData.position}
-                        onChange={handleChange}
+                </Form.Item>
+
+                <Form.Item
+                    label='Position'
+                    name="Position"
+                    rules={[
+                        {
+                            required: true,
+                        },
+                    ]}
+                >
+                    <Input
+                        placeholder="Your position goes here"
+                        onChange={(e) => handleChange(e, 'position')}
                     />
-                    {/* <input
-                        required
-                        maxLength={4}
-                        placeholder=" Your Application year goes here"
-                        name="year_applied"
-                        value={jobData.year_applied}
-                        onChange={handleChange}
-                    /> */}
+                </Form.Item>
+
+                <Form.Item
+                    label='Select Application Year'
+                    name='Application Year'
+                    rules={[
+                        {
+                            required: true,
+                        },
+                    ]}
+                >
                     <DatePicker     
                         required
-                        // defaultChecked 
-                        // name="year_applied"
                         selected={jobData.year_applied}
                         onChange={handleChangeDate}
-                        picker="year" 
+                        picker="year"
                     />
-                    <label>Select Resume used</label>
-                    {/* <Select
-                        required
-                        name="year_applied"
-                        value={jobData.year_applied}
-                        onChange={handleChange}
-                    />
-                        <Select.Option name="year_applied" value="male">Male</Select.Option>
+                </Form.Item>
+
+                <Form.Item
+                    label='Select Resume Used'
+                    name='Resume'
+                    rules={[
+                        {
+                            required: true,
+                        },
+                    ]}
+                >
+                    <Select 
+                        onChange={(e) => handleChangeSelect(e, 'doc_id')}
+                    >
+                        {/* <Select.Option value="male">Male</Select.Option>
                         <Select.Option value="female">Female</Select.Option>
                         <Select.Option value="other">Other</Select.Option>
-                    <Select/> */}
-                    <select 
-                        required
-                        maxLength={4}
-                        placeholder=" Your Application year goes here"
-                        name="doc_used_name" 
-                        value={jobData.year_applied}
-                        onChange={handleChange}>
-                            <option value="male"> Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                    </select>
-                    <input className='create' type='submit' onClick={postData} />
-                </form>
-            </div>
-        </div>
+                        <Select.Option value="prefer not to disclose">prefer not to disclose</Select.Option> */}
+
+                        {myDocs?.map((doc) => 
+                        <Select.Option value={doc.doc_id}>{doc.doc_title}</Select.Option>
+                        )}
+                    </Select>
+                </Form.Item>
+
+                <Form.Item>
+                    <Button 
+                        type="primary" 
+                        onClick={postData}
+                        htmlType="submit"
+                        style={{
+                            borderColor: 'grey',
+                            backgroundColor: 'blue',
+                            marginLeft: '45%',
+                            marginTop: '2%'
+                        }}
+                    >
+                        Submit
+                    </Button>
+                </Form.Item>
+
+            </Form>}
+
+        </Modal>
     )
 }
 

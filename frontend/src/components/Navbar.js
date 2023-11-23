@@ -1,12 +1,15 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment } from 'react'
+import { Fragment, React, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
+import { Link } from 'react-router-dom'
+import { useCookies } from 'react-cookie'
 
 const navigation = [
-  { name: 'Search', href: '#', current: true },
-  { name: 'My Docs', href: '#', current: false },
-  { name: 'My Uploads', href: '#', current: false }
+  { name: 'Home', href: '/', current: true },
+  { name: 'Search', href: '/search', current: false },
+  { name: 'My Docs', href: '/myDocs', current: false },
+  { name: 'My Uploads', href: '/myUploads', current: false }
 ]
 
 function classNames(...classes) {
@@ -14,6 +17,29 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
+  const [ currPage, setCurrPage ] = useState("Home")
+  const [ cookies, setCookie, removeCookie ] = useCookies(null)
+
+  const signOut = () => {
+    console.log('sign out')
+    // need to remove cookies
+    removeCookie('Email')
+    removeCookie('AuthToken')
+    window.location.reload()
+  }
+  
+  const handleClick = (name) => {
+    console.log('clicked! ', name)
+
+    for (let i = 0; i < navigation.length; i++) {
+      if (navigation[i].name == name) {
+        navigation[i].current = true;
+      } else {
+        navigation[i].current = false;
+      }
+    }
+  }
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -36,12 +62,12 @@ export default function Navbar() {
                   <img
                     className="block lg:hidden h-8 w-auto"
                     src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-                    alt="Workflow"
+                    alt="Breach"
                   />
                   <img
                     className="hidden lg:block h-8 w-auto"
                     src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-                    alt="Workflow"
+                    alt="Breach"
                   />
                 </div>
                 <div className="hidden sm:block sm:ml-6">

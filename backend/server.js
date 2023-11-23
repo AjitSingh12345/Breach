@@ -10,25 +10,156 @@ const jwt = require('jsonwebtoken')
 app.use(cors())
 app.use(express.json())
 
-app.get('/todos/:userEmail', async (req, res) => {
-    const { userEmail } = req.params
-    try {
-        const todos = await pool.query('select * from todos where user_email = $1', [userEmail])
-        res.json(todos.rows)
-    } catch (err) {
-        console.log(error)
+// GET 
+
+
+
+app.get('/breaches/:query', async (req, res) => {
+    console.log('get breaches w query: ', req.params)
+    const query = req.params.query
+    if (query) {
+        console.log("sp: ", query, " -> ", query.split(':'))
+        const queries = query.split(':')
+        console.log("in stuff: ", queries[0], " ... ", queries[1]) 
+
+        /*
+        steps:
+        1. get all the breaches that match the breach query
+        2. get all the doc_id's of docs that match the doc query = valid_docs
+        3. for all those breaches -> if its doc_id is in valid_doc -> ret this breach
+        4. ... in view more modal -> fetch the doc w that doc id from documents
+
+        sql query:
+        `select * 
+        from breaches
+        where {queries[0]} AND doc_id IN (
+            select doc_id
+            from documents
+            where {queries[1]};
+        );`
+
+        -- work on below 
+        cases:
+        - q0 can be empty, q1 can be empty
+        - this affects the where or and statement
+        */
+        try {
+            const fq = 
+            `select * 
+            from breaches`
+
+            if (queries[0].length > 0 && queries[1].length > 0) {
+                fq += 
+                `${queries[0]} AND doc_id IN (
+                    select doc_id
+                    from documents
+                    ${queries[1]}
+                );`
+            } else if (queries[0].length > 0) {
+                fq += 
+                `${queries[0]};`
+            } else if (queries[1].length > 0) {
+                fq += 
+                `WHERE doc_id IN (
+                    select doc_id
+                    from documents
+                    ${queries[1]}
+                );`
+            }
+
+            console.log("fq: ", fq)
+            const docs = await pool.query(fq)        
+            res.json(docs.rows)
+        } catch (err) {
+            console.log(err)
+        }
     }
 })
 
-// create a new todo
-app.post('/todos', async (req, res) => {
-    const { user_email, title, progress, date } = req.body 
-    console.log(user_email, title, progress, date)
+app.get('/breaches', async (req, res) => {
+    console.log('get breaches: ')
+    try {
+        const docs = await pool.query('select * from breaches')
+        res.json(docs.rows)
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+app.get('/documents', async (req, res) => {
+    try {
+        console.log('heyy')
+        const docs = await pool.query('select * from documents')
+        res.json(docs.rows)
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+// get all breaches uploaded by user w email thats passed in
+app.get('/myBreaches/:userEmail', async (req, res) => {
+    const { userEmail } = req.params
+    console.log("em: ", userEmail)
+    try {
+        const docs = await pool.query('select * from breaches where user_email = $1', [userEmail])
+        res.json(docs.rows)
+        console.log("ret q: ", docs.rows)
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+// get all documents uploaded by user w email thats passed in
+app.get('/documents/:userEmail', async (req, res) => {
+    const { userEmail } = req.params
+    console.log(req.params)
+    try {
+        const docs = await pool.query('select * from documents where user_email = $1', [userEmail])
+        res.json(docs.rows)
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+// get all documents uploaded by user w email thats passed in
+app.get('/documents/byId/:id', async (req, res) => {
+    const { id } = req.params
+    console.log(req.params, "...", id)
+    try {
+        const docs = await pool.query('select * from documents where doc_id = $1', [id])
+        res.json(docs.rows)
+        console.log("res of doc by id: ", docs.rows)
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+// POSTS
+
+// upload a new document to the table
+app.post('/documents', async (req, res) => {
+    const { doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date } = req.body 
+    console.log(doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date)
+    const id = uuidv4()
+    // try {
+    //     const newDoc = await pool.query(`insert into documents (doc_id, doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`, 
+    //     [id, doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date])
+    //     res.json(newDoc)
+    // } catch(err) {
+    //     console.error(err)
+    // }
+})
+
+// upload a new breach to the table
+app.post('/breaches', async (req, res) => {
+    console.log("in breaches endpt")
+    const { company_name, position, year_applied, doc_id, job_added_date } = req.body 
+    console.log(company_name, position, year_applied, doc_id, job_added_date)
     const id = uuidv4()
     try {
-        const newToDo = await pool.query(`insert into todos(id, user_email, title, progress, date) VALUES($1, $2, $3, $4, $5)`, 
-        [id, user_email, title, progress, date])
-        res.json(newToDo)
+        const newBreach = await pool.query(`insert into breaches (breach_id, company_name, position, year_applied, doc_id, breach_added_date) VALUES($1, $2, $3, $4, $5, $6)`, 
+        [id, company_name, position, year_applied, doc_id, job_added_date])
+        res.json(newBreach)
     } catch(err) {
         console.error(err)
     }
@@ -47,7 +178,6 @@ app.put('/todos/:id', async (req, res) => {
         console.error(err)
     }
 })
-
 
 // delete a todo by its id (primary key)
 app.delete('/todos/:id', async (req, res) => {

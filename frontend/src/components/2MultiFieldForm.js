@@ -3,11 +3,11 @@ import {  Button, Form, Input, Space  } from 'antd';
 
 const MFF2 = ({ label1, label2, name, docData, setDocData }) => {
   const onUpdate = (values, allVals) => {
-    console.log('Received values of form:', values, ", ", allVals);
+    console.log('Received values of form:', values, ", ", allVals, allVals[name]);
 
     setDocData(docData => ({
         ...docData,
-        [name] : allVals
+        [name] : allVals[name]
     }))
 
     console.log("updated: ", docData)

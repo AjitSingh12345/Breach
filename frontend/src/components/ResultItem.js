@@ -1,33 +1,36 @@
 import { useState } from 'react'
-import JobModal from './JobModal'
+import MoreInfoModal from './MoreInfoModal'
 
-
-const ResultItem = ({ entries }) => {
+const ResultItem = ({ viewMorePossible, headings, entries }) => {
   const [ showInfoModal, setShowInfoModal ] = useState(false)
+  const img = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'
+  const [ info, setInfo ] = useState(null)
 
-  entries = [
-    {
-      company_name: 'Citadel',
-      position: 'SWE Intern',
-      year_applied: '2010',
-      role: 'Admin',
-      email: 'jane.cooper@example.com',
-      
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-    },
-    {
-      company_name: 'Google',
-      position: 'SWE II',
-      year_applied: '2000',
-      role: 'Admin',
-      email: 'jane.cooper@example.com',
-      
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+  if (headings == null) {
+    headings = ['Company', 'Position', 'Year Applied']
+  }
+
+  const handleViewMore = async (doc_id) => {
+    // get doc info
+    console.log("view more of doc: ", doc_id)
+
+    if (doc_id != null) {
+      // fetch req 
+      try {
+        const resp = await fetch(`${process.env.REACT_APP_SERVERURL}/documents/byId/${doc_id}`)
+        const json = await resp.json()
+        setInfo(json)
+        console.log('aa: ', info, " json: ", json)
+      } catch (err) {
+        console.error(err)
+        console.log('bb: ', err)
+      }
+    } else {
+      setInfo(null) // ???
     }
-    // More entries...
-  ]
+
+    setShowInfoModal(true)
+  }
 
     return (
       <div className="flex flex-col">
@@ -37,13 +40,15 @@ const ResultItem = ({ entries }) => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
+                    {headings?.map((header) => 
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Company
+                      {header}
                     </th>
-                    <th
+                    )}
+                    {/* <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
@@ -54,19 +59,19 @@ const ResultItem = ({ entries }) => {
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Year Applied
-                    </th>
+                    </th> */}
                     <th scope="col" className="relative px-6 py-3">
                       <span className="sr-only">Edit</span>
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {entries.map((entry) => (
+                  {entries?.map((entry) => (
                     <tr key={entry.company_name}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
-                            <img className="h-10 w-10 rounded-full" src={entry.image} alt="" />
+                            <img className="h-10 w-10 rounded-full" src={img} alt="" />
                           </div>
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900">{entry.company_name}</div>
@@ -77,10 +82,11 @@ const ResultItem = ({ entries }) => {
                         <div className="text-sm text-gray-900">{entry.position}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{entry.year_applied}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a onClick={() => setShowInfoModal(true)} href="#" className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-indigo-600 hover:text-indigo-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {viewMorePossible && <a onClick={() => handleViewMore(entry.doc_id)} href="#" className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-indigo-600 hover:text-indigo-900">
                           View More
-                        </a>
+                        </a>}
+                        {!viewMorePossible && entry.doc_id}
                       </td>
                     </tr>
                   ))}
@@ -89,11 +95,7 @@ const ResultItem = ({ entries }) => {
             </div>
           </div>
         </div>
-
-        {/* modal stuff??? */}
-        {/* dont show modal -> show info 'form' */}
-        {showInfoModal && <JobModal/>}
-
+        {showInfoModal && <MoreInfoModal input={info} showModal={showInfoModal} setShowModal={setShowInfoModal} />}
       </div>
     )
   }
