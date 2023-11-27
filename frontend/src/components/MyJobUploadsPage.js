@@ -104,7 +104,7 @@ const MyJobUploadsPage = ({ listName, userEmail, getData, myDocs }) => {
 
             <h1>These are the breaches you uploaded! <br/> </h1>
             {/* pass thru set Show Modal so other files can use it to close out of the form when x is clicked */}
-            {showJobModal && <JobModal setShowJobModal={setShowJobModal} getData={getData} myDocs={myDocs} />}
+            {showJobModal && <JobModal setShowJobModal={setShowJobModal} getData={getData} myDocs={myDocs} userEmail={userEmail} getMyBreaches={getMyBreaches} />}
             
             {/* pass in keys of uploads as headings, & uploads as entires */}
             <ResultItem headings={['Company', 'Position', 'Year Applied', 'doc used']} viewMorePossible={false} entries={uploads} docTitles={docTitles} getDocTitles={getDocTitles} />

@@ -12,7 +12,7 @@ import {
     notification
 } from 'antd';
 
-const JobModal = ({ setShowJobModal, getData, myDocs }) => {
+const JobModal = ({ setShowJobModal, getData, myDocs, userEmail, getMyBreaches }) => {
     const [ cookies, setCookie, removeCookie ] = useCookies(null)
     const [ posted, setPosted ] = useState(false)
 
@@ -29,6 +29,7 @@ const JobModal = ({ setShowJobModal, getData, myDocs }) => {
 
     const [ jobData, setJobData ] = useState({
         company_name: null,
+        user_email: userEmail,
         position: null,
         year_applied: null,
         doc_id: null,
@@ -56,7 +57,7 @@ const JobModal = ({ setShowJobModal, getData, myDocs }) => {
         & close modal & show notification thaat form was submitted
         - else -> dont close modal or send post req & give notif to fill req fields 
         */
-        // console.log("posting: ", e, docData, docData['skills']['skills'])
+        console.log("posting: ", e, jobData)
         var reqFieldsFilled = true
 
         for (const k of ReqKeys) if (jobData[k] == null || jobData[k] == '') {
@@ -82,6 +83,8 @@ const JobModal = ({ setShowJobModal, getData, myDocs }) => {
                     setPosted(true)
                     await sleep(2000)
                     setShowJobModal(false)
+                } else {
+                    notif(false)
                 }
             } catch(err) {
                 console.error(err)
@@ -94,6 +97,10 @@ const JobModal = ({ setShowJobModal, getData, myDocs }) => {
             notif(false)
         }
     }
+
+    useEffect(() => {
+        getMyBreaches()
+    }, [posted])
 
     const handleChange = (e, name) => {
         console.log("changing!", e)

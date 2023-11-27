@@ -203,14 +203,15 @@ app.post('/documents', async (req, res) => {
 // upload a new breach to the table
 app.post('/breaches', async (req, res) => {
     console.log("in breaches endpt")
-    const { company_name, position, year_applied, doc_id, job_added_date } = req.body 
-    console.log(company_name, position, year_applied, doc_id, job_added_date)
+    const { company_name, user_email, position, year_applied, doc_id, job_added_date } = req.body 
+    console.log(company_name, user_email, position, year_applied, doc_id, job_added_date)
     const id = uuidv4()
     try {
-        const newBreach = await pool.query(`insert into breaches (breach_id, company_name, position, year_applied, doc_id, breach_added_date) VALUES($1, $2, $3, $4, $5, $6)`, 
-        [id, company_name, position, year_applied, doc_id, job_added_date])
+        const newBreach = await pool.query(`insert into breaches (breach_id, user_email, company_name, position, year_applied, doc_id, breach_added_date) VALUES($1, $2, $3, $4, $5, $6, $7)`, 
+        [id, user_email, company_name, position, year_applied, doc_id, job_added_date])
         res.json(newBreach)
     } catch(err) {
+        res.json(err)
         console.error(err)
     }
 })
