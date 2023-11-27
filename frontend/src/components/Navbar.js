@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 
 const navigation = [
-  { name: 'Home', href: '/', current: true },
+  { name: 'Home', href: '/', current: false },
   { name: 'Search', href: '/search', current: false },
   { name: 'My Docs', href: '/myDocs', current: false },
   { name: 'My Uploads', href: '/myUploads', current: false }

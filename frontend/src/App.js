@@ -184,7 +184,7 @@ const App = () => {
     /*
     Im gonna make 2 boxes (1 on left & 1 on right )
     */
-    <div className="app">
+    <div>
       <Navbar/>
       <Routes>
         <Route path="/" element={HomePage} />

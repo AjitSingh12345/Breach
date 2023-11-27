@@ -68,6 +68,7 @@ const DocModal = ({ setShowDocModal, getData }) => {
     }
 
     const postData = async(e) => {
+        console.log("pd json: ", JSON.stringify(docData))
         /*
         - have arr of required keys
         - if all those r filled -> then make post req

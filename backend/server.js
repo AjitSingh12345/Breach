@@ -11,9 +11,6 @@ app.use(cors())
 app.use(express.json())
 
 // GET 
-
-
-
 app.get('/breaches/:query', async (req, res) => {
     console.log('get breaches w query: ', req.params)
     const query = req.params.query
@@ -44,32 +41,35 @@ app.get('/breaches/:query', async (req, res) => {
         - this affects the where or and statement
         */
         try {
-            const fq = 
+            var fq = 
             `select * 
             from breaches`
 
             if (queries[0].length > 0 && queries[1].length > 0) {
                 fq += 
-                `${queries[0]} AND doc_id IN (
+                ` ${queries[0]} AND doc_id IN (
                     select doc_id
                     from documents
                     ${queries[1]}
                 );`
             } else if (queries[0].length > 0) {
                 fq += 
-                `${queries[0]};`
+                ` ${queries[0]};`
             } else if (queries[1].length > 0) {
                 fq += 
-                `WHERE doc_id IN (
+                ` WHERE doc_id IN (
                     select doc_id
                     from documents
                     ${queries[1]}
                 );`
+            } else {
+                fq += `;`
             }
 
             console.log("fq: ", fq)
             const docs = await pool.query(fq)        
             res.json(docs.rows)
+            console.log(docs.rows)
         } catch (err) {
             console.log(err)
         }
@@ -134,20 +134,70 @@ app.get('/documents/byId/:id', async (req, res) => {
     }
 })
 
+// get document title from id 
+app.get('/documents/TitleFromId/:id', async (req, res) => {
+    const { id } = req.params
+    console.log(req.params, "...", id)
+    try {
+        const docs = await pool.query('select doc_title from documents where doc_id = $1', [id])
+        res.json(docs.rows)
+        console.log("res of  title by id: ", docs.rows)
+    } catch (err) {
+        console.log(err)
+    }
+})
+
 // POSTS
 
 // upload a new document to the table
 app.post('/documents', async (req, res) => {
-    const { doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date } = req.body 
+    console.log("doc p: ", req.body)
+    var { doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date } = req.body 
     console.log(doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date)
     const id = uuidv4()
-    // try {
-    //     const newDoc = await pool.query(`insert into documents (doc_id, doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`, 
-    //     [id, doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date])
-    //     res.json(newDoc)
-    // } catch(err) {
-    //     console.error(err)
-    // }
+
+    // format previous_experiences into a string
+    var tmp = ""
+    for (var item of previous_experiences) {
+        if (tmp != "") tmp += "; "
+        tmp += item.first + ": " + item.last
+    }
+    previous_experiences = tmp
+
+    // format clubs_activities into a string
+    tmp = ""
+    for (var item of clubs_activities) {
+        if (tmp != "") tmp += "; "
+        tmp += item.first + ": " + item.last
+    }
+    clubs_activities = tmp
+    
+    // format skills into a string
+    tmp = ""
+    for (var item of skills) {
+        if (tmp != "") tmp += ", "
+        tmp += item.first
+    }
+    skills = tmp
+
+    // format awards into a string
+    tmp = ""
+    for (var item of awards_honors) {
+        if (tmp != "") tmp += ", "
+        tmp += item.first
+    }
+    awards_honors = tmp
+
+    // console.log("final:", previous_experiences, ",", clubs_activities, ",", skills, ",", awards_honors)
+
+    try {
+        const newDoc = await pool.query(`insert into documents (doc_id, doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`, 
+        [id, doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date])
+        res.json(newDoc)
+    } catch(err) {
+        res.send(err)
+        console.error(err)
+    }
 })
 
 // upload a new breach to the table
