@@ -1,5 +1,3 @@
-import Modal from './Modal'
-import JobModal from './JobModal'
 import DocModal from './DocModal'
 import { useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie'
@@ -8,8 +6,8 @@ import {
     notification
 } from 'antd'
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons'
-import ResultItem from './ResultItem'
-import MoreInfoModal from './MoreInfoModal'
+import ResultItem from '../ResultItem'
+import MoreInfoModal from '../Search Page/MoreInfoModal'
 
 // need to destructure prop passed in
 const MyDocsPage = ({ listName, userEmail, getData }) => {

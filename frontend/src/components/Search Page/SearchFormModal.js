@@ -1,6 +1,6 @@
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
-import GpaSlider from './GpaSlider';
+import GpaSlider from '../Modal Peices/GpaSlider';
 import {
   Button,
   Cascader,

@@ -1,22 +1,19 @@
-import ListHeader from './components/ListHeader'
-import ListItem from './components/ListItem'
 import { useEffect, useState } from 'react'
 import Auth from './components/Auth'
 import { useCookies } from 'react-cookie'
 import Navbar from './components/Navbar.js'
 import ResultItem from './components/ResultItem'
-import SearchFormModal from './components/SearchFormModal'
+import SearchFormModal from './components/Search Page/SearchFormModal.js'
 import { Modal } from 'antd'
-import ExampleMod from './onlineModal'
-import DocModal from './components/DocModal'
+import DocModal from './components/My Docs Page/DocModal.js'
 import {
   Button,
   Flex
 } from 'antd'
 import { SearchOutlined } from '@ant-design/icons';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import MyJobUploadsPage from './components/MyJobUploadsPage'
-import MyDocsPage from './components/MyDocsPage'
+import MyJobUploadsPage from './components/My Jobs Page/MyJobUploadsPage.js'
+import MyDocsPage from './components/My Docs Page/MyDocsPage.js'
 
 const App = () => {
   const [ cookies, setCookie, removeCookie ] = useCookies(null)

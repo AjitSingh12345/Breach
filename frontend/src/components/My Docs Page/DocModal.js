@@ -3,9 +3,9 @@
 previous experience: [{company name: work done}]
 */
 
-import MFF1 from "./1MultiFieldForm"
-import MFF2 from "./2MultiFieldForm"
-import GpaSlider from "./GpaSlider"
+import MFF1 from "../Modal Peices/1MultiFieldForm"
+import MFF2 from "../Modal Peices/2MultiFieldForm"
+import GpaSlider from "../Modal Peices/GpaSlider"
 import { useState } from "react"
 import { useCookies } from 'react-cookie'
 

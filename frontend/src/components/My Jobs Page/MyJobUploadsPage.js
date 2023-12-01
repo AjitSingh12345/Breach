@@ -1,13 +1,11 @@
-import Modal from './Modal'
 import JobModal from './JobModal'
-import DocModal from './DocModal'
 import { useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie'
 import {
     Button
 } from 'antd'
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons'
-import ResultItem from './ResultItem'
+import ResultItem from '../ResultItem'
 
 
 // need to destructure prop passed in

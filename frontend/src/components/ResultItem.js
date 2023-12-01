@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import MoreInfoModal from './MoreInfoModal'
+import MoreInfoModal from './Search Page/MoreInfoModal'
 import {  
   Space, 
   Table, 
