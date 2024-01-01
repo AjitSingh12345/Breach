@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Auth from './components/Auth'
 import { useCookies } from 'react-cookie'
-import Navbar from './components/Navbar.js'
 import ResultItem from './components/ResultItem'
 import SearchFormModal from './components/Search Page/SearchFormModal.js'
 import { Modal } from 'antd'
@@ -14,38 +13,23 @@ import { SearchOutlined } from '@ant-design/icons';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import MyJobUploadsPage from './components/My Jobs Page/MyJobUploadsPage.js'
 import MyDocsPage from './components/My Docs Page/MyDocsPage.js'
+import Navbar from './components/Navbar.js'
+import HomePage from './components/HomePage.js'
 
 const App = () => {
   const [ cookies, setCookie, removeCookie ] = useCookies(null)
-  // const authToken = cookies.AuthToken
-  // const userEmail = cookies.Email
+  const authToken = cookies.AuthToken
+  const userEmail = cookies.Email
   const [ breaches, setBreaches ] = useState(null)
   const [ myDocs, setMyDocs ] = useState(null)
-
-  const tmpBreaches = [
-    {
-      company_name: 'Citadel',
-      position: 'SWE Intern',
-      year_applied: '2010',
-      role: 'Admin',
-      email: 'jane.cooper@example.com',
-    },
-    {
-      company_name: 'Google',
-      position: 'SWE III',
-      year_applied: '2000',
-      role: 'Admin',
-      email: 'jane.cooper@example.com',
-      
-          }
-    // More entries...
-  ]
+  const ReqKeys = ['company_name', 'position', 'year_applied', 'college_attended', 'min_gpa', 'max_gpa', 'gender', 'ethnicity']
+  const ReqKeysArr = ['previous_employers', 'expereince_keywords', 'skills', 'clubs_activites']
 
   // pass these into search form modal to get data back from search form 
   // pass getData into search form so u can call it w a certain query after submit button is hit (or clear)
-
   const getData = async (query) => {
     console.log('get data: ', query)
+    console.log(JSON.stringify(query))
     
     /* 
     - turn query into str for endpt (get cant have body like post)
@@ -79,8 +63,8 @@ const App = () => {
     begin = true
     if (query != null) {
       for (const [key, value] of Object.entries(query)) {
-        console.log(`${key}: ${value}`);
-        if (value != null && !(key == 'company_name' || key == 'position' || key == 'year_applied')) {
+        console.log(`2 ${key}: ${value}`);
+        if (value != null && value != '' && !(key == 'company_name' || key == 'position' || key == 'year_applied') && !(ReqKeysArr.includes(key) && value.length == 0)) {
           if (begin) {
             doc_query += 'WHERE'
             begin = false
@@ -88,7 +72,11 @@ const App = () => {
             doc_query += 'AND'
           }
 
-          if (key == 'min_gpa') {
+          if (ReqKeysArr.includes(key)) {
+            var options = getArrFromObj(key, value)
+            console.log(`3 ${key}: ${JSON.stringify(value)}`);
+            doc_query += options
+          } else if (key == 'min_gpa') {
             doc_query += ` gpa >= ${value} `
           } else if (key == 'max_gpa') {
             doc_query += ` gpa <= ${value} `
@@ -103,6 +91,8 @@ const App = () => {
 
     console.log("final q: ", where_query)
     try {
+      const tmpq = "WHERE company_name = 'a' AND position = 'b' AND year_applied = 2029 :WHERE (previous_employers like '%loopz%' or previous_employers like '%poopz%') AND (expereince_keywords like '%hi%') AND college_attended = 'a' AND major = 'b' AND gpa >= 0.92 AND gpa <= 3.31 AND (skills like '%java%') AND (clubs_activites like '%bye%')"
+      const tmpq2 = "WHERE company_name = 'a' AND position = 'b' AND year_applied = 2029 :WHERE (previous_employers like '|loopz|')"
       const resp = await fetch(`${process.env.REACT_APP_SERVERURL}/breaches/${where_query}`)
       const json = await resp.json()
       setBreaches(json)
@@ -114,9 +104,9 @@ const App = () => {
     console.log('c')
   }
 
-  const userEmail = 'asing0525@gmail.com'
 
   const getMyDocs = async (query) => {
+    console.log("get my docs ... ")
       try {
         const resp = await fetch(`${process.env.REACT_APP_SERVERURL}/documents/${userEmail}`)
         const json = await resp.json()
@@ -124,6 +114,28 @@ const App = () => {
       } catch (err) {
         console.error(err)
       }
+  }
+
+  function getArrFromObj(key, obj) {
+    /*
+    ex.) skills = [java, cpp]
+    WHERE skills like '%java% or skills like '%cpp%;
+    */
+    var ret = ' '
+    if (obj.length > 0) {
+      ret += '('
+
+      // console.log("hehe: ", key, obj[0].first, obj.length, Object.keys(obj))
+      for (let i = 0; i < obj.length; i++) {
+        if (i > 0) ret += ' or '
+        ret += key + ' like \'|' + obj[i].first + '|\''
+      }
+
+      ret += ') '
+    }
+
+    console.log("gafo: ", ret)
+    return ret
   }
 
   // if we dont put empty dep list, this will run inf 
@@ -145,23 +157,20 @@ const App = () => {
     setSearchDone(!searchDone)
    }
 
-  const HomePage = (
-    <p>This is the home page</p>
-  )
-
   const SearchPage = (
-    <>
+    <div className='wrapper'>
       <div className='home-box search'>
         <Button 
             onClick={stuff}
-            type="dashed" 
+            type="primary" 
             size="large"
             icon={<SearchOutlined />}
             style={{
+                // color: 'black',
                 marginLeft: '37%',
                 height: 'auto',
                 borderColor: 'grey',
-                backgroundColor: '#fff1f0',
+                backgroundColor: '#4add00',
                 marginBottom: '10%'
               }}
             >
@@ -174,25 +183,35 @@ const App = () => {
       <div className='home-box results'>
         <ResultItem viewMorePossible={true} headings={['Company', 'Position', 'Year Applied']} entries={breaches} /> 
       </div>
-    </>
+    </div>
   )
 
   return (
-    /*
-    Im gonna make 2 boxes (1 on left & 1 on right )
-    */
-    <div>
-      <Navbar/>
-      <Routes>
-        <Route path="/" element={HomePage} />
+    <>
+      {authToken && 
+      <>
+        <Navbar/>
+          <Routes>
+            <Route path="/" element={SearchPage} />
 
-        <Route path="/search" element={SearchPage} />
+            <Route path="/search" element={SearchPage} />
 
-        <Route path="/myUploads" element={<MyJobUploadsPage listName="L1" userEmail={userEmail} getData={getData} myDocs={myDocs} />} />
+            <Route path="/myUploads" element={<MyJobUploadsPage listName="L1" userEmail={userEmail} getData={getData} myDocs={myDocs} />} />
 
-        <Route path="/myDocs" element={<MyDocsPage listName="L2" userEmail={userEmail} getData={getData}/>} />
-      </Routes>
-    </div>
+            <Route path="/myDocs" element={<MyDocsPage listName="L2" userEmail={userEmail} getData={getData}/>} />
+          </Routes>
+      </>
+      }
+
+      {!authToken &&     
+      <div className='auth-body'>
+        <div className='div-app'> 
+          <Auth/>
+        </div>
+      </div>
+      }
+
+    </>
   )
 }
 

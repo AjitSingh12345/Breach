@@ -12,6 +12,8 @@ const MFF1 = ({ label1, name, docData, setDocData }) => {
             [name] : allVals[name]
         }))
 
+        // console.log(docData[name], docData[name].length, docData[name][0])
+
         console.log("updated: ", docData)
     }
     
@@ -53,7 +55,7 @@ const MFF1 = ({ label1, name, docData, setDocData }) => {
               ))}
               <Form.Item>
                 <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                  Add field
+                  Add Option
                 </Button>
               </Form.Item>
             </>

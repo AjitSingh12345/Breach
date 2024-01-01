@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useCookies } from 'react-cookie'
+import {  LockOutlined, UserOutlined  } from '@ant-design/icons'
 
 const Auth = () => {
     const [ cookies, setCookie, removeCookie ] = useCookies(null)
@@ -17,6 +18,8 @@ const Auth = () => {
     }
 
     const handleSubmit = async (e, endpoint) => {
+        console.log("subbing")
+
         // dont want form reloading
         e.preventDefault()
         if (!isLogin && password != confirmPassword) {
@@ -65,16 +68,17 @@ const Auth = () => {
                     />}
                     <input type="submit" className="create" onClick={(e) => handleSubmit(e, isLogin ? 'login' : 'signup')}/>
                     {/* if error exists, show error */}
-                    {error && <p>{error}</p>}
+                    {error && <p style={{'color': 'red'}}>{error}</p>}
                 </form>
+                <br/>
                 <div className='auth-options'>
                     <button 
                         onClick={() => viewLogin(false)}
-                        style={{backgroundColor : !isLogin ? 'rgb(255, 255, 255)' : 'rgb(188, 188, 188)'}}
+                        style={{backgroundColor : isLogin ? 'rgb(215, 255, 255)' : 'rgb(53, 155, 155)'}}
                     >Sign Up</button>
                     <button 
                         onClick={() => viewLogin(true)}
-                        style={{backgroundColor : isLogin ? 'rgb(255, 255, 255)' : 'rgb(188, 188, 188)'}}
+                        style={{backgroundColor : !isLogin ? 'rgb(215, 255, 255)' : 'rgb(53, 155, 155)'}}
                     >Login</button>
                 </div>
             </div>

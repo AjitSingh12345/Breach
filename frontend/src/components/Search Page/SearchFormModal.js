@@ -18,6 +18,7 @@ import {
   Space,
   Flex
 } from 'antd';
+import MFF1 from "../Modal Peices/1MultiFieldForm"
 
 const SearchFormModal = ({ getData }) => {
   console.log("in: ")
@@ -28,14 +29,14 @@ const SearchFormModal = ({ getData }) => {
     company_name: null,
     position: null,
     year_applied: null,
-    previous_employers: null, 
-    expereince_keywords: null, 
+    previous_employers: [], 
+    expereince_keywords: [], 
     college_attended: null,
     major: null,
     min_gpa: null,
     max_gpa: null,
-    skills: null,
-    clubs_activites: null,
+    skills: [],
+    clubs_activites: [],
     gender: null,
     ethnicity: null
   })
@@ -139,15 +140,17 @@ const SearchFormModal = ({ getData }) => {
         </Form.Item>
         <Form.Item label="Previous Employers">
           {/* select multiple items */}
-          <Input
+          {/* <Input
             onChange={(e) => handleChange(e, 'previous_employers')}
-          />
+          /> */}
+          <MFF1 label1={'Previous Employers'} name='previous_employers' docData={searchParams} setDocData={setSearchParams} />
         </Form.Item>
         <Form.Item label="Experince Keywords">
           {/* select multiple items */}
-          <Input
+          {/* <Input
             onChange={(e) => handleChange(e, 'expereince_keywords')}
-          />
+          /> */}
+          <MFF1 label1={'Experince Keywords'} name='expereince_keywords' docData={searchParams} setDocData={setSearchParams} />
         </Form.Item>
         <Form.Item label="College Attended">
           {/* select from many options */}
@@ -162,22 +165,24 @@ const SearchFormModal = ({ getData }) => {
           />
         </Form.Item>
         <Form.Item label="Min GPA">
-          <GpaSlider name='min_gpa' data={searchParams} setData={setSearchParams} />
+          <GpaSlider init_val={0} name='min_gpa' data={searchParams} setData={setSearchParams} />
         </Form.Item>
         <Form.Item label="Max GPA">
-          <GpaSlider name='max_gpa' data={searchParams} setData={setSearchParams} />
+          <GpaSlider init_val={6} name='max_gpa' data={searchParams} setData={setSearchParams} />
         </Form.Item>
         <Form.Item label="Skills">
           {/* select multiple options */}
-          <Input
+          {/* <Input
             onChange={(e) => handleChange(e, 'skills')}
-          />
+          /> */}
+          <MFF1 label1={'Skills'} name='skills' docData={searchParams} setDocData={setSearchParams} />
         </Form.Item>
         <Form.Item label="Clubs/Activites">
           {/* select multiple options */}
-          <Input
+          {/* <Input
             onChange={(e) => handleChange(e, 'clubs_activites')}
-          />
+          /> */}
+          <MFF1 label1={'Clubs/Activites'} name='clubs_activites' docData={searchParams} setDocData={setSearchParams} />
         </Form.Item>
         <Form.Item label="Gender">
           <Select

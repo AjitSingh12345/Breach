@@ -232,7 +232,7 @@ const DocModal = ({ setShowDocModal, getData }) => {
                         ]}
                     >
                         {/* <label>Your gpa goes here</label> */}
-                        <GpaSlider name='gpa' data={docData} setData={setDocData} />
+                        <GpaSlider init_val={0} name='gpa' data={docData} setData={setDocData} />
                     </Form.Item>
 
                     <Form.Item

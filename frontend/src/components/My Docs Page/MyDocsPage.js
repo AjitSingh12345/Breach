@@ -1,5 +1,5 @@
 import DocModal from './DocModal'
-import { useState, useEffect } from 'react'
+import { Fragment, React, useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie'
 import {
     Button,
@@ -58,13 +58,13 @@ const MyDocsPage = ({ listName, userEmail, getData }) => {
         <div>
             <Button 
                 onClick={() => setShowDocModal(true)}
-                type="dashed" 
+                type="primary" 
                 size="large"
                 icon={<PlusOutlined />}
                 style={{
                     height: 'auto',
                     borderColor: 'grey',
-                    backgroundColor: '#fff1f0',
+                    backgroundColor: '#4add00',
                     left: '45%',
                     marginTop: '1%' 
                 }}
@@ -73,12 +73,25 @@ const MyDocsPage = ({ listName, userEmail, getData }) => {
                 ADD NEW
             </Button>
             
-            <h1>My uploaded documents <br/> </h1>
+            <h1>My uploaded documents <br/> <br/> </h1>
             
             {myDocs?.map((doc) => 
-            <p>{doc.doc_title} <a onClick={() => handleViewMore(doc.doc_id)} href="#" className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-indigo-600 hover:text-indigo-900">
-                View More
-            </a> <br/> </p>
+            <p>{doc.doc_title}
+            <Button 
+              type="primary" 
+              style={{ 
+                background: "#13c2c2", 
+                borderColor: "grey",
+                color: "white",
+                marginLeft: "20px",
+                borderRadius: "100px"
+              }}
+              onClick={() => handleViewMore(doc.doc_id)}
+            >
+              View More
+            </Button>
+            <br/> <br/>
+            </p>
             )}
 
             {/* pass thru set Show Modal so other files can use it to close out of the form when x is clicked */}

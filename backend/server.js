@@ -12,11 +12,19 @@ app.use(express.json())
 
 // GET 
 app.get('/breaches/:query', async (req, res) => {
-    console.log('get breaches w query: ', req.params)
+    console.log('get breaches w query: ', req.params.query)
     const query = req.params.query
     if (query) {
         console.log("sp: ", query, " -> ", query.split(':'))
         const queries = query.split(':')
+
+        /*
+        need to make replacements from whats in search form modal to column names in db
+        */
+        var replacements = [['|', '%'], ['previous_employers', 'previous_experiences'], ['expereince_keywords', 'previous_experiences'], ['college_attended', 'school_name']]
+        for (let i = 0; i < replacements.length; i++) {
+            if (queries.length > 1) queries[1] = queries[1].replaceAll(replacements[i][0], replacements[i][1]) // replacements to turn backend query to valid sql query
+        }
         console.log("in stuff: ", queries[0], " ... ", queries[1]) 
 
         /*
@@ -148,11 +156,9 @@ app.get('/documents/TitleFromId/:id', async (req, res) => {
 })
 
 // POSTS
-
-// upload a new document to the table
-app.post('/documents', async (req, res) => {
-    console.log("doc p: ", req.body)
-    var { doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date } = req.body 
+async function post_entry(body_entry, res, isArr) {
+    console.log("in: ", body_entry)
+    var { doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date } = body_entry
     console.log(doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date)
     const id = uuidv4()
 
@@ -189,15 +195,40 @@ app.post('/documents', async (req, res) => {
     awards_honors = tmp
 
     // console.log("final:", previous_experiences, ",", clubs_activities, ",", skills, ",", awards_honors)
-
     try {
         const newDoc = await pool.query(`insert into documents (doc_id, doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`, 
         [id, doc_title, user_email, school_name, gpa, major, minor, grad_date, previous_experiences, skills, clubs_activities, awards_honors, ethnicity, gender, doc_added_date])
-        res.json(newDoc)
+        if (isArr) {
+            res.write(JSON.stringify(newDoc))
+        } else {
+            res.json(newDoc)
+        }
     } catch(err) {
-        res.send(err)
+        if (isArr) {
+            res.write(JSON.stringify(err))
+        } else {
+            res.send(err)
+        }
         console.error(err)
     }
+}
+
+// upload a new document to the table
+app.post('/documents', async (req, res) => {
+    console.log("doc p: ", req.body)
+
+    if (Array.isArray(req.body)) {
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        console.log("is arr")
+        for (const body_entry of req.body) {
+            post_entry(body_entry, res, true)
+        }
+        res.end()
+    } else {
+        console.log("is not arr")
+        post_entry(req.body, res, false)
+    }
+    console.log("done")
 })
 
 // upload a new breach to the table
@@ -216,26 +247,23 @@ app.post('/breaches', async (req, res) => {
     }
 })
 
-// edit a todo -- put req
-app.put('/todos/:id', async (req, res) => {
+
+// delete a document by its id (primary key)
+app.delete('/documents/:id', async (req, res) => {
     const { id } = req.params
-    const { user_email, title, progress, date } = req.body
     try {
-        // sql query to update 
-        const editToDo = await pool.query(`UPDATE todos SET user_email = $1, title = $2, progress = $3, date = $4 where id = $5;`, 
-        [user_email, title, progress, date, id])
-        res.json(editToDo)
+        const deleteDoc = await pool.query('DELETE FROM documents where doc_id = $1;', [id])
+        res.json(deleteDoc)
     } catch (err) {
         console.error(err)
     }
 })
 
-// delete a todo by its id (primary key)
-app.delete('/todos/:id', async (req, res) => {
-    const { id } = req.params
+// delete all documents
+app.delete('/documents', async (req, res) => {
     try {
-        const deleteToDo = await pool.query('DELETE FROM todos where id = $1;', [id])
-        res.json(deleteToDo)
+        const deleteDoc = await pool.query('DELETE FROM documents;')
+        res.json(deleteDoc)
     } catch (err) {
         console.error(err)
     }

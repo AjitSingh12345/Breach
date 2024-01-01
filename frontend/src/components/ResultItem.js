@@ -80,7 +80,8 @@ const ResultItem = ({ viewMorePossible, headings, entries, docTitles, getDocTitl
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          {viewMorePossible && <Button 
+          {viewMorePossible && 
+          <Button 
             type="dashed" 
             style={{ 
               background: "#13c2c2", 

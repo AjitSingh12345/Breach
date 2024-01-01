@@ -7,8 +7,8 @@ import {
     Space  
 } from 'antd';
 
-const GpaSlider = ({ name, data, setData }) => {
-  const [inputValue, setInputValue] = useState(0);
+const GpaSlider = ({ init_val, name, data, setData }) => {
+  const [inputValue, setInputValue] = useState(init_val);
 
   const onChange = (value) => {
     console.log('gpa is now: ', value)

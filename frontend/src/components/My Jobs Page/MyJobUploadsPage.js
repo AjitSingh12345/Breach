@@ -41,7 +41,7 @@ const MyJobUploadsPage = ({ listName, userEmail, getData, myDocs }) => {
 
         for (let i = 0; i < uploads?.length; i++) {
             const entry = uploads[i]
-            // console.log("ee: ", entry)
+            console.log("ee: ", entry)
 
             // fetch req 
             try {
@@ -68,7 +68,7 @@ const MyJobUploadsPage = ({ listName, userEmail, getData, myDocs }) => {
 
         }
 
-        console.log(docTitles, docTitles && uploads ? docTitles[uploads[0].doc_id] : "nulll")
+        // console.log("end: ", docTitles, (docTitles && uploads) ? docTitles[uploads[0].doc_id] : "nulll")
     }
 
     // get my breaches when page loads
@@ -82,16 +82,16 @@ const MyJobUploadsPage = ({ listName, userEmail, getData, myDocs }) => {
     }, [uploads])
 
     return (
-        <div>
+        <div className='wrapper'>
             <Button 
             onClick={() => setShowJobModal(true)}
-            type="dashed" 
+            type="primary" 
             size="large"
             icon={<PlusOutlined />}
             style={{
                 height: 'auto',
                 borderColor: 'grey',
-                backgroundColor: '#fff1f0',
+                backgroundColor: '#4add00', 
                 left: '45%',
                 marginTop: '1%'                
             }}
@@ -104,8 +104,10 @@ const MyJobUploadsPage = ({ listName, userEmail, getData, myDocs }) => {
             {/* pass thru set Show Modal so other files can use it to close out of the form when x is clicked */}
             {showJobModal && <JobModal setShowJobModal={setShowJobModal} getData={getData} myDocs={myDocs} userEmail={userEmail} getMyBreaches={getMyBreaches} />}
             
-            {/* pass in keys of uploads as headings, & uploads as entires */}
-            <ResultItem headings={['Company', 'Position', 'Year Applied', 'doc used']} viewMorePossible={false} entries={uploads} docTitles={docTitles} getDocTitles={getDocTitles} />
+            <div className='home-box my-uploads'>
+                {/* pass in keys of uploads as headings, & uploads as entires */}
+                <ResultItem headings={['Company', 'Position', 'Year Applied', 'doc used']} viewMorePossible={false} entries={uploads} docTitles={docTitles} getDocTitles={getDocTitles} />
+            </div>
         </div>
     )
 }
