@@ -2,6 +2,8 @@
 
 Breach is a Full Stack web application developed using the PERN stack (PostgreSQL, Express, React, Node.js). The application allows users to upload and manage resumes and job data, as well as perform advanced queries on a database of resumes based on various criteria such as school name, GPA, major, previous experience, and skills.
 
+The platform aims to demystify the resume screening process by enabling users to benchmark their resumes against those of successful applicants and share their own resumes and job application outcomes.
+
 ## Table of Contents
 
 - [Features](#features)
@@ -90,6 +92,6 @@ REACT_APP_SERVERURL=http://localhost:8000
 - **GET /documents/:userEmail**: Retrieve all documents uploaded by a specific user.
 
 ## Example Queries
-    ```sql
+    ```bash
     SELECT * FROM breaches WHERE company_name = 'Google' AND position = 'Software Engineer' AND gpa >= 3.5;
     ```
