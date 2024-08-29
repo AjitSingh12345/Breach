@@ -19,7 +19,7 @@ The platform aims to demystify the resume screening process by enabling users to
 - **Advanced Search Functionality**: Allows users to query the database based on various criteria to find relevant resumes.
 - **Responsive Design**: The application is designed to be responsive and user-friendly across different devices.
 
-## Technology Stack
+## Tech Stack
 
 - **Frontend**: React, React Router, Ant Design
 - **Backend**: Node.js, Express.js
