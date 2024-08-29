@@ -7,7 +7,7 @@ The platform aims to demystify the resume screening process by enabling users to
 ## Table of Contents
 
 - [Features](#features)
-- [Technology Stack](#technology-stack)
+- [Tech Stack](#tech-stack)
 - [Setup and Installation](#setup-and-installation)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
