@@ -92,6 +92,4 @@ REACT_APP_SERVERURL=http://localhost:8000
 - **GET /documents/:userEmail**: Retrieve all documents uploaded by a specific user.
 
 ## Example Queries
-    ```bash
     SELECT * FROM breaches WHERE company_name = 'Google' AND position = 'Software Engineer' AND gpa >= 3.5;
-    ```
