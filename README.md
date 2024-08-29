@@ -11,6 +11,7 @@ The platform aims to demystify the resume screening process by enabling users to
 - [Setup and Installation](#setup-and-installation)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
+- [Demo](#demo)
 
 ## Features
 
@@ -91,5 +92,5 @@ REACT_APP_SERVERURL=http://localhost:8000
 - **GET /myBreaches/:userEmail**: Retrieve all breaches uploaded by a specific user.
 - **GET /documents/:userEmail**: Retrieve all documents uploaded by a specific user.
 
-## Example Queries
-    SELECT * FROM breaches WHERE company_name = 'Google' AND position = 'Software Engineer' AND gpa >= 3.5;
+## Demo
+https://github.com/user-attachments/assets/cf6c62eb-e528-47b8-9be1-265282ccb056
